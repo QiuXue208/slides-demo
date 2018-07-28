@@ -1,24 +1,46 @@
-$('.images > img:nth-child(1)').addClass('current')
-$('.picker > div:nth-child(1)').addClass('grey')
-$('.images > img:nth-child(2)').addClass('enter')
-$('.images > img:nth-child(3)').addClass('enter')
-$('.images > img:nth-child(4)').addClass('enter')
-let n = 1
+let n
+init()
 setInterval(()=>{
-  $(`.images > img:nth-child(${calN(n)})`).removeClass('current').addClass('leave')
-    .one('transitionend', (e)=>{
-      $(e.currentTarget).removeClass('leave').addClass('enter')
-    })
-  $(`.picker > div:nth-child(${calN(n+1)})`).addClass('grey').siblings().removeClass('grey')
-  $(`.images > img:nth-child(${calN(n+1)})`).removeClass('enter').addClass('current')
-  n += 1
-},3000)
+     makeLeave($(getImageNode(n)))
+      .one('transitionend',(e)=>{
+      makeEnter($(e.currentTarget))
+      })
+      makeGrey($((getDivNode(n+1))))
+      makeCurrent(getImageNode(n+1))
+      n += 1
+},2000)
+
+
+function init(){
+  n = 1
+  $(`.picker > div:nth-child(1)`).addClass('grey')
+  $('.images > img:nth-child(' + n + ')').addClass('current').siblings().addClass('enter')
+}
+function makeEnter($node){
+  $node.removeClass('leave current').addClass('enter')
+}
+function makeLeave($node){
+  $node.removeClass('current enter').addClass('leave')
+  return $node
+}
+function makeCurrent($node){
+  $node.removeClass('enter leave').addClass('current')
+}
+function makeGrey($node){
+  $node.addClass('grey').siblings().removeClass('grey')
+}
+function getImageNode(n){
+  return $(`.images > img:nth-child(${calN(n)})`)
+}
+function getDivNode(n){
+  return $(`.picker > div:nth-child(${calN(n)})`)
+}
 function calN(n){
-  if(n>4){
-    n = n%4
-    if (n===0){
-      n =4
-    }
-  } // n = 1 2 3
-  return n
+      if(n > 4){
+        n = n%4 
+         if(n === 0){
+           n = 4
+         }
+      }     
+      return n
 }
