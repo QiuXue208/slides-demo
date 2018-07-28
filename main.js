@@ -1,16 +1,15 @@
 let n
 init()
-setInterval(()=>{
-     makeLeave($(getImageNode(n)))
-      .one('transitionend',(e)=>{
-      makeEnter($(e.currentTarget))
-      })
-      makeGrey($((getDivNode(n+1))))
-      makeCurrent(getImageNode(n+1))
-      n += 1
-},2000)
+var timerId = setTimer()
 
-
+/*解决页面切换后出现的bug*/
+document.addEventListener('visibilitychange',function(e){
+  if(document.hidden){
+    clearInterval(timerId)
+  }else{
+    timerId = setTimer()
+  }
+})
 function init(){
   n = 1
   $(`.picker > div:nth-child(1)`).addClass('grey')
@@ -43,4 +42,15 @@ function calN(n){
          }
       }     
       return n
+}
+function setTimer(){
+  return setInterval(()=>{
+    makeLeave($(getImageNode(n)))
+     .one('transitionend',(e)=>{
+     makeEnter($(e.currentTarget))
+     })
+     makeGrey($((getDivNode(n+1))))
+     makeCurrent(getImageNode(n+1))
+     n += 1
+},2000)
 }
